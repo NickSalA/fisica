@@ -48,19 +48,22 @@ def resultadosContinuo(voltaje,resistencias, resistenciaTotal, corriente, serie)
     print(f'La corriente total es: {corriente:.5f} A\n\n')
 
 def resistenciaRLC(serieRLC):
-    voltaje,_,resistenciaTotal,_ = resistenciaContinuo(serie=True)
+    voltaje, resistencias, resistenciaTotal, _ = resistenciaContinuo(serie=True)
     frecuencia = obtenerFrecuencia()
     inductancia = obtenerInductancia()
     capacitancia = obtenerCapacitancia()
-    XL=2*3.14159265*frecuencia*inductancia #90 grados
-    XC=1/(2*3.14159265*frecuencia*capacitancia) #-90 grados
+    XL=2*math.pi*frecuencia*inductancia #90 grados
+    XC=1/(2*math.pi*frecuencia*capacitancia) #-90 grados
     if serieRLC:
         X=XL-XC
-        Z, Zgrados=(resistenciaTotal**2+X**2)**0.5, math.atan(X/resistenciaTotal)
+        Z =(resistenciaTotal**2+X**2)**0.5
+        Zgrados = math.atan(X/resistenciaTotal)
     else:
         X=1/XC-1/XL
-        Z, Zgrados=1/((resistenciaTotal**-2+X**2)**0.5), math.acos(-X/resistenciaTotal)
-    corriente, corrienteGrados=voltaje/Z, 0-Zgrados 
+        Z =1/((resistenciaTotal**-2+X**2)**0.5) 
+        Zgrados = -1*math.acos(X/(1/resistenciaTotal))
+    corriente= voltaje/Z 
+    corrienteGrados = 0-Zgrados 
     return voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corrienteGrados
 
 def resultadosRLC(voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corrienteGrados, serieRLC):
@@ -68,7 +71,7 @@ def resultadosRLC(voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corri
     print(f'La resistencia total es: {resistenciaTotal:.5f} Ohmios')
     print(f'La reactancia inductiva es: {XL:.5f} Ohmios con un desfase de 90 grados')
     print(f'La reactancia capacitiva es: {XC:.5f} Ohmios con un desfase de -90 grados')
-    print(f'La impedancia total es: {Z:.5f} Ohmios con un desfase de {Zgrados:.5f} grados\n\n')
+    print(f'La impedancia total es: {Z:.5f} Ohmios con un desfase de {Zgrados:.5f} grados')
     if serieRLC:
         print(f'La corriente total en todas las resistencias en serie siempre es la misma: {corriente:.5f} A con un desfase de {corrienteGrados:.5f} grados')
         print(f'La caida de voltaje en la resistencia es: {resistenciaTotal*corriente:.5f} V')
@@ -80,7 +83,7 @@ def resultadosRLC(voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corri
         print(f'La corriente en la reactancia inductiva es: {voltaje/XL:.5f} A con un desfase de 90 grados')
         print(f'La corriente en la reactancia capacitiva es: {voltaje/XC:.5f} A con un desfase de -90 grados')
     print(f'La corriente total es: {corriente:.5f} A con un desfase de {corrienteGrados:.5f} grados')
-    print(f'El voltaje total es: {voltaje:.5f} V con un desfase de 0 grados')
+    print(f'El voltaje total es: {voltaje:.5f} V con un desfase de 0 grados\n\n')
 def main():
     while True:
         opcion = menu()
@@ -109,7 +112,7 @@ def main():
 
                 elif opcionCircuito == 2:
                     print(f'Circuito RLC en paralelo\n')
-                    voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corrienteGrados = resistenciaRLC(serieRLC=False)
+                    voltaje, resistenciaTotal, XL, XC, Z, Zgrados, corriente, corrienteGrados = resistenciaRLC(serieRLC=False)
                     resultadosRLC(voltaje, resistenciaTotal, XL, XC, Z, Zgrados, corriente, corrienteGrados, serieRLC=False)
 
                 elif opcionCircuito == 3:
