@@ -64,6 +64,7 @@ def resistenciaRLC(serieRLC):
         X=XL-XC
         Z =(resistenciaTotal**2+X**2)**0.5
         Zgrados = math.atan(X/resistenciaTotal)*180/math.pi #Aca falla algo
+        
     else:
         X=1/XC-1/XL
         Z =1/((resistenciaTotal**-2+X**2)**0.5) 
@@ -98,17 +99,35 @@ def graficarCircuito(voltaje, resistencias, serie, rlc=False, XL=None, XC=None):
     ax.plot([0, 1], [1, 1], 'k-')  # Línea superior
     ax.plot([1, 1], [1, 0], 'k-')  # Línea derecha
     ax.plot([1, 0], [0, 0], 'k-')  # Línea inferior
-
+    resistenciaTotal=suma_Resistencia(resistencias,serie)
     componentes = resistencias
+    voltajes=[]
+    leyenda_rows=[]
+    #hallar voltajes para la layenda
+    nombres=[]
+    voltajetotal=0
+    corriente=voltaje/resistenciaTotal
+    
     if rlc:
-        resistenciaTotal=suma_Resistencia(resistencias,serie)
         componentes =[resistenciaTotal, XL, XC]
         nombres = ['R','RL', 'RC']
-
+        leyenda_rows = [r'$R_{\text{total}}$', r'$X_l$', r'$X_C$']
+        leyenda_text = [[f'{resistenciaTotal:.2f} Ω'], [XL], [XC]] 
     else:
-        nombres = ['R' + str(i + 1) for i in range(len(resistencias))]
+        for i in range(len(resistencias)):
+            nombres.append(rf'$R_{i+1}$')
+        leyenda_rows=nombres
+        leyenda_rows.append(r'$R_{\text{total}}$')
+        leyenda_text=[[f'{r:.2f} Ω'] for r in resistencias]
+        leyenda_text.append([f'{resistenciaTotal:.2f} Ω'])
+        #inserta voltajes
+            
         
     if serie:
+        for i in range(len(resistencias)):
+            leyenda_rows.append(rf'$V_{i+1}$')
+            leyenda_text.append([f'{corriente*resistencias[i]:.5f} V'])
+        
         num_componentes = len(componentes)
         tercio = num_componentes // 3
         resto = num_componentes % 3
@@ -138,6 +157,9 @@ def graficarCircuito(voltaje, resistencias, serie, rlc=False, XL=None, XC=None):
             y = np.array([0,0.03,0,-0.03,0, 0.03,0,-0.03,0])
             ax.plot(x, y, 'k-')             
     else: #Paralelo
+
+        leyenda_rows.append(r'$V_{todos}$')
+        leyenda_text.append([voltaje])
         num_componentes = len(componentes)
         for i, (comp, nombre) in enumerate(zip(componentes, nombres)):
             y_pos = 1 - i / (num_componentes - 1) if num_componentes > 1 else 0.5
@@ -147,6 +169,23 @@ def graficarCircuito(voltaje, resistencias, serie, rlc=False, XL=None, XC=None):
             x = np.array([0.42,0.44,0.46,0.48,0.5, 0.52,0.54,0.56,0.58])
             ax.plot(x, y, 'k-')
     ax.text(-0.1, 0.5, f'{voltaje:.2f} V', va='center', ha='center', fontsize=12, bbox=dict(facecolor='white', edgecolor='black'))
+    #tablade datos 
+        # Datos para la leyenda
+    leyenda_columns = [r'Valor']
+
+    # Agregar una tabla en la parte inferior del gráfico
+    the_table = plt.table(cellText=leyenda_text,
+                        rowLabels=leyenda_rows,
+                        colLabels=leyenda_columns,
+                        cellLoc='center',
+                        bbox=[1.2, 0.4, 0.30, 0.35])
+
+    ax.text(1.5, 0.9, r'$\mathbf{\mathbb{Leyenda\;}}$', fontsize=14)
+    # Adjust layout to make room for the table:
+    plt.subplots_adjust(left=0.2, bottom=0.2)
+
+    # Ajustar diseño
+    plt.subplots_adjust(right=0.7)
 
     ax.set_xlim(-0.2, 1.2)
     ax.set_ylim(-0.2, 1.2)
