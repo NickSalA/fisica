@@ -57,11 +57,11 @@ def resistenciaRLC(serieRLC):
     if serieRLC:
         X=XL-XC
         Z =(resistenciaTotal**2+X**2)**0.5
-        Zgrados = math.atan(X/resistenciaTotal)
+        Zgrados = math.atan(X/resistenciaTotal) #Aca falla algo
     else:
         X=1/XC-1/XL
         Z =1/((resistenciaTotal**-2+X**2)**0.5) 
-        Zgrados = -1*math.acos(X/(1/resistenciaTotal))
+        Zgrados = -1*math.acos(X/(1/resistenciaTotal)) #Aca falla algo
     corriente= voltaje/Z 
     corrienteGrados = 0-Zgrados 
     return voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corrienteGrados
