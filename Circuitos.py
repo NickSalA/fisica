@@ -26,7 +26,6 @@ def suma_Resistencia(resistencias,serie):
     if serie:
         for i in range(len(resistencias)):
             resistenciaTotal += resistencias[i]
-            print(f'resistencias {i} {resistencias[i]}')
     else:
         for i in range(len(resistencias)):
             resistenciaTotal += 1/resistencias[i]
@@ -37,7 +36,6 @@ def resistenciaContinuo(serie):
     voltaje=obtenerVoltaje()
     resistencias = obtenerResistencias()
     resistenciaTotal = suma_Resistencia(resistencias,serie)
-
     corriente=voltaje/resistenciaTotal        
     return voltaje, resistencias, resistenciaTotal, corriente
 
@@ -71,7 +69,7 @@ def resistenciaRLC(serieRLC):
         Zgrados = -1*math.acos(X/(1/resistenciaTotal))*180/math.pi #Aca falla algo
     corriente= voltaje/Z 
     corrienteGrados = 0-Zgrados 
-    return voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corrienteGrados
+    return voltaje, resistencias, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corrienteGrados
 
 def resultadosRLC(voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corrienteGrados, serieRLC):
     print(f'Los resultados son:')
@@ -103,11 +101,12 @@ def graficarCircuito(voltaje, resistencias, serie, rlc=False, XL=None, XC=None):
     componentes = resistencias
     if rlc:
         resistenciaTotal=suma_Resistencia(resistencias,serie)
-        componentes =[resistenciaTotal,XL, XC]
-        nombres = ['R' + str(i + 1) for i in range(len(resistencias))] + ['XL', 'XC']
+        componentes =[resistenciaTotal, XL, XC]
+        nombres = ['R','RL', 'RC']
+
     else:
         nombres = ['R' + str(i + 1) for i in range(len(resistencias))]
-
+        
     if serie:
         num_componentes = len(componentes)
         tercio = num_componentes // 3
@@ -127,7 +126,8 @@ def graficarCircuito(voltaje, resistencias, serie, rlc=False, XL=None, XC=None):
         for i, (comp, nombre) in enumerate(zip(componentes[2*tercio:], nombres[2*tercio:])):
             ax.plot([1 - i / (tercio + resto), 1 - (i + 1) / (tercio + resto)], [0, 0], 'k-')
             ax.text(1 - (i + 0.5) / (tercio + resto), -0.05, nombre + '\n' + f'{comp:.2f} Ω', ha='center', va='top')
-    else:
+
+    else: #Paralelo
         num_componentes = len(componentes)
         for i, (comp, nombre) in enumerate(zip(componentes, nombres)):
             y_pos = 1 - i / (num_componentes - 1) if num_componentes > 1 else 0.5
@@ -152,12 +152,12 @@ def main():
                     print(f'Circuito de corriente continua en serie\n')
                     voltaje, resistencias, resistenciaTotal, corriente = resistenciaContinuo(serie=True)
                     resultadosContinuo(voltaje, resistencias, resistenciaTotal, corriente, serie=True)
-                    graficarCircuito(resistencias, voltaje, serie=True)
+                    graficarCircuito(voltaje,resistencias, serie=True)
                 elif opcionCircuito == 2:
                     print(f'Circuito de corriente continua en paralelo\n')
                     voltaje, resistencias, resistenciaTotal, corriente = resistenciaContinuo(serie=False)
-                    resultadosContinuo(voltaje, resistencias,resistenciaTotal, corriente, serie=False)
-                    graficarCircuito(resistencias, voltaje, serie=False)
+                    resultadosContinuo(voltaje, resistencias, resistenciaTotal, corriente, serie=False)
+                    graficarCircuito(voltaje, resistencias, serie=False)
                 elif opcionCircuito == 3:
                     break
         elif opcion == 2:
@@ -165,14 +165,14 @@ def main():
                 opcionCircuito = menutwo()
                 if opcionCircuito == 1:
                     print(f'Circuito RLC en serie\n')
-                    voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corrienteGrados = resistenciaRLC(serieRLC=True)
+                    voltaje, resistencias, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corrienteGrados = resistenciaRLC(serieRLC=True)
                     resultadosRLC(voltaje, resistenciaTotal, XL, XC, Z, Zgrados, corriente, corrienteGrados, serieRLC=True)
                     graficarCircuito(voltaje, resistencias, serie=True, rlc=True, XL=XL, XC=XC)
                 elif opcionCircuito == 2:
                     print(f'Circuito RLC en paralelo\n')
-                    voltaje, resistenciaTotal, XL, XC, Z, Zgrados, corriente, corrienteGrados = resistenciaRLC(serieRLC=False)
+                    voltaje, resistencias,resistenciaTotal, XL, XC, Z, Zgrados, corriente, corrienteGrados = resistenciaRLC(serieRLC=False)
                     resultadosRLC(voltaje, resistenciaTotal, XL, XC, Z, Zgrados, corriente, corrienteGrados, serieRLC=False)
-                    graficarCircuito(voltaje, resistencias, serie=False, rlc=False, XL=XL, XC=XC)
+                    graficarCircuito(voltaje, resistencias, serie=False, rlc=True, XL=XL, XC=XC)
                 elif opcionCircuito == 3:
                     break
         elif opcion == 3:
