@@ -1,5 +1,6 @@
 from datos import obtenerCapacitancia, obtenerFrecuencia, obtenerInductancia, obtenerResistencias, obtenerVoltaje
 import math
+import matplotlib.pyplot as plt
 
 def menu():
     print("Bienvenido al programa de circuitos eléctricos!")
@@ -57,11 +58,11 @@ def resistenciaRLC(serieRLC):
     if serieRLC:
         X=XL-XC
         Z =(resistenciaTotal**2+X**2)**0.5
-        Zgrados = math.atan(X/resistenciaTotal) #Aca falla algo
+        Zgrados = math.atan(X/resistenciaTotal)*180/math.pi #Aca falla algo
     else:
         X=1/XC-1/XL
         Z =1/((resistenciaTotal**-2+X**2)**0.5) 
-        Zgrados = -1*math.acos(X/(1/resistenciaTotal)) #Aca falla algo
+        Zgrados = -1*math.acos(X/(1/resistenciaTotal))*180/math.pi #Aca falla algo
     corriente= voltaje/Z 
     corrienteGrados = 0-Zgrados 
     return voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corrienteGrados
@@ -84,6 +85,56 @@ def resultadosRLC(voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corri
         print(f'La corriente en la reactancia capacitiva es: {voltaje/XC:.5f} A con un desfase de -90 grados')
     print(f'La corriente total es: {corriente:.5f} A con un desfase de {corrienteGrados:.5f} grados')
     print(f'El voltaje total es: {voltaje:.5f} V con un desfase de 0 grados\n\n')
+
+def graficarCircuito(resistencias, voltaje, serie, rlc=False, XL=None, XC=None):
+    fig, ax = plt.subplots()
+
+    ax.plot([0, 0], [0, 1], 'k-')  # Línea izquierda
+    ax.plot([0, 1], [1, 1], 'k-')  # Línea superior
+    ax.plot([1, 1], [1, 0], 'k-')  # Línea derecha
+    ax.plot([1, 0], [0, 0], 'k-')  # Línea inferior
+
+    componentes = resistencias
+    if rlc:
+        componentes += [XL, XC]
+        nombres = ['R' + str(i + 1) for i in range(len(resistencias))] + ['XL', 'XC']
+    else:
+        nombres = ['R' + str(i + 1) for i in range(len(resistencias))]
+
+    if serie:
+        num_componentes = len(componentes)
+        tercio = num_componentes // 3
+        resto = num_componentes % 3
+
+        # Línea superior
+        for i, (comp, nombre) in enumerate(zip(componentes[:tercio], nombres[:tercio])):
+            ax.plot([i / (tercio + 1), (i + 1) / (tercio + 1)], [1, 1], 'k-')
+            ax.text((i + 0.5) / (tercio + 1), 1.05, nombre + '\n' + f'{comp:.2f} Ω', ha='center')
+        
+        # Línea derecha
+        for i, (comp, nombre) in enumerate(zip(componentes[tercio:2*tercio], nombres[tercio:2*tercio])):
+            ax.plot([1, 1], [1 - (i + 1) / (tercio + 1), 1 - i / (tercio + 1)], 'k-')
+            ax.text(1.05, 1 - (i + 0.5) / (tercio + 1), nombre + '\n' + f'{comp:.2f} Ω', va='center')
+        
+        # Línea inferior
+        for i, (comp, nombre) in enumerate(zip(componentes[2*tercio:], nombres[2*tercio:])):
+            ax.plot([1 - i / (tercio + resto), 1 - (i + 1) / (tercio + resto)], [0, 0], 'k-')
+            ax.text(1 - (i + 0.5) / (tercio + resto), -0.05, nombre + '\n' + f'{comp:.2f} Ω', ha='center', va='top')
+    else:
+        num_componentes = len(componentes)
+        for i, (comp, nombre) in enumerate(zip(componentes, nombres)):
+            y_pos = 1 - i / (num_componentes - 1) if num_componentes > 1 else 0.5
+            ax.plot([0, 1], [y_pos, y_pos], 'k-')
+            ax.text(0.5, y_pos, nombre + '\n' + f'{comp:.2f} Ω', ha='center', va='center')
+
+    ax.text(-0.1, 0.5, f'{voltaje:.2f} V', va='center', ha='center', fontsize=12, bbox=dict(facecolor='white', edgecolor='black'))
+
+    ax.set_xlim(-0.2, 1.2)
+    ax.set_ylim(-0.2, 1.2)
+    ax.axis('off')
+    plt.title('Esquema del Circuito')
+    plt.show()
+
 def main():
     while True:
         opcion = menu()
@@ -94,12 +145,12 @@ def main():
                     print(f'Circuito de corriente continua en serie\n')
                     voltaje, resistencias, resistenciaTotal, corriente = resistenciaContinuo(serie=True)
                     resultadosContinuo(voltaje, resistencias, resistenciaTotal, corriente, serie=True)
-
+                    graficarCircuito(resistencias, voltaje, serie=True)
                 elif opcionCircuito == 2:
                     print(f'Circuito de corriente continua en paralelo\n')
                     voltaje, resistencias, resistenciaTotal, corriente = resistenciaContinuo(serie=False)
                     resultadosContinuo(voltaje, resistencias,resistenciaTotal, corriente, serie=False)
-                    
+                    graficarCircuito(resistencias, voltaje, serie=False)
                 elif opcionCircuito == 3:
                     break
         elif opcion == 2:
@@ -109,12 +160,12 @@ def main():
                     print(f'Circuito RLC en serie\n')
                     voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corrienteGrados = resistenciaRLC(serieRLC=True)
                     resultadosRLC(voltaje, resistenciaTotal, XL, XC, Z, Zgrados, corriente, corrienteGrados, serieRLC=True)
-
+                    graficarCircuito(resistencias, voltaje, serie=True, rlc=True, XL=XL, XC=XC)
                 elif opcionCircuito == 2:
                     print(f'Circuito RLC en paralelo\n')
                     voltaje, resistenciaTotal, XL, XC, Z, Zgrados, corriente, corrienteGrados = resistenciaRLC(serieRLC=False)
                     resultadosRLC(voltaje, resistenciaTotal, XL, XC, Z, Zgrados, corriente, corrienteGrados, serieRLC=False)
-
+                    graficarCircuito(resistencias, voltaje, serie=False, rlc=False, XL=XL, XC=XC)
                 elif opcionCircuito == 3:
                     break
         elif opcion == 3:
