@@ -22,9 +22,11 @@ def menutwo():
     return opcionCircuito
 
 def suma_Resistencia(resistencias,serie):
+    resistenciaTotal=0
     if serie:
         for i in range(len(resistencias)):
             resistenciaTotal += resistencias[i]
+            print(f'resistencias {i} {resistencias[i]}')
     else:
         for i in range(len(resistencias)):
             resistenciaTotal += 1/resistencias[i]
@@ -35,6 +37,7 @@ def resistenciaContinuo(serie):
     voltaje=obtenerVoltaje()
     resistencias = obtenerResistencias()
     resistenciaTotal = suma_Resistencia(resistencias,serie)
+
     corriente=voltaje/resistenciaTotal        
     return voltaje, resistencias, resistenciaTotal, corriente
 
@@ -100,7 +103,7 @@ def graficarCircuito(voltaje, resistencias, serie, rlc=False, XL=None, XC=None):
     componentes = resistencias
     if rlc:
         resistenciaTotal=suma_Resistencia(resistencias,serie)
-        componentes =[resistenciaTotal][XL, XC]
+        componentes =[resistenciaTotal,XL, XC]
         nombres = ['R' + str(i + 1) for i in range(len(resistencias))] + ['XL', 'XC']
     else:
         nombres = ['R' + str(i + 1) for i in range(len(resistencias))]
