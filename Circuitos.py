@@ -47,7 +47,7 @@ def resultadosResistivo(voltaje, resistenciaTotal, resistencias,corriente, serie
             print(f'La corriente en la resistencia {i+1} es: {voltaje/resistencias[i]:.5f} V')
     print(f'La resistencia total es: {resistenciaTotal:.5f} Ohmios\n\n')
 
-def resistenciaRLCSerie(serieRLC):
+def resistenciaRLC(serieRLC):
     print("Circuito RLC en serie\n")
     voltaje = obtenerVoltaje() # 0 grados
     resistenciaTotal = resistenciaResist(serie=True)
@@ -86,8 +86,14 @@ def main():
                 elif opcionCircuito == 3:
                     break
         elif opcion == 2:
-            # Aquí puedes añadir la lógica para los circuitos RLC
-            print("Funcionalidad para circuitos RLC aún no implementada.")
+            while True:
+                opcionCircuito = menutwo()
+                if opcionCircuito == 1:
+                    print(f'Circuito RLC en serie\n')
+                    voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corrienteGrados = resistenciaRLC(serieRLC=True)
+                if opcionCircuito == 2:
+                    print(f'Circuito RLC en paralelo\n')
+                    voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corrienteGrados = resistenciaRLC(serieRLC=False)
         elif opcion == 3:
             print("Saliendo del programa.")
             break
