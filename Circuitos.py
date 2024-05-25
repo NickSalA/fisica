@@ -99,7 +99,8 @@ def graficarCircuito(voltaje, resistencias, serie, rlc=False, XL=None, XC=None):
 
     componentes = resistencias
     if rlc:
-        componentes += [XL, XC]
+        resistenciaTotal=suma_Resistencia(resistencias,serie)
+        componentes =[resistenciaTotal][XL, XC]
         nombres = ['R' + str(i + 1) for i in range(len(resistencias))] + ['XL', 'XC']
     else:
         nombres = ['R' + str(i + 1) for i in range(len(resistencias))]
