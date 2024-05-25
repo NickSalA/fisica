@@ -89,7 +89,7 @@ def resultadosRLC(voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corri
     print(f'La corriente total es: {corriente:.5f} A con un desfase de {corrienteGrados:.5f} grados')
     print(f'El voltaje total es: {voltaje:.5f} V con un desfase de 0 grados\n\n')
 
-def graficarCircuito(resistencias, voltaje, serie, rlc=False, XL=None, XC=None):
+def graficarCircuito(voltaje, resistencias, serie, rlc=False, XL=None, XC=None):
     fig, ax = plt.subplots()
 
     ax.plot([0, 0], [0, 1], 'k-')  # Línea izquierda
@@ -99,8 +99,7 @@ def graficarCircuito(resistencias, voltaje, serie, rlc=False, XL=None, XC=None):
 
     componentes = resistencias
     if rlc:
-        resistenciatotal=suma_Resistencia(resistencias,serie)
-        componentes += [resistenciatotal, XL]
+        componentes += [XL, XC]
         nombres = ['R' + str(i + 1) for i in range(len(resistencias))] + ['XL', 'XC']
     else:
         nombres = ['R' + str(i + 1) for i in range(len(resistencias))]
@@ -164,12 +163,12 @@ def main():
                     print(f'Circuito RLC en serie\n')
                     voltaje, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corrienteGrados = resistenciaRLC(serieRLC=True)
                     resultadosRLC(voltaje, resistenciaTotal, XL, XC, Z, Zgrados, corriente, corrienteGrados, serieRLC=True)
-                    graficarCircuito(resistencias, voltaje, serie=True, rlc=True, XL=XL, XC=XC)
+                    graficarCircuito(voltaje, resistencias, serie=True, rlc=True, XL=XL, XC=XC)
                 elif opcionCircuito == 2:
                     print(f'Circuito RLC en paralelo\n')
                     voltaje, resistenciaTotal, XL, XC, Z, Zgrados, corriente, corrienteGrados = resistenciaRLC(serieRLC=False)
                     resultadosRLC(voltaje, resistenciaTotal, XL, XC, Z, Zgrados, corriente, corrienteGrados, serieRLC=False)
-                    graficarCircuito(resistencias, voltaje, serie=False, rlc=False, XL=XL, XC=XC)
+                    graficarCircuito(voltaje, resistencias, serie=False, rlc=False, XL=XL, XC=XC)
                 elif opcionCircuito == 3:
                     break
         elif opcion == 3:
