@@ -172,12 +172,15 @@ def graficarCircuito(voltaje, resistencias, serie, rlc=False, XL=None, XC=None):
     #tablade datos 
         # Datos para la leyenda
     leyenda_columns = [r'Valor']
-
+    row_colors = ['#D5FDA5'] * len(leyenda_rows)
+    col_colors = ['#4f81bd']
     # Agregar una tabla en la parte inferior del gráfico
     the_table = plt.table(cellText=leyenda_text,
                         rowLabels=leyenda_rows,
                         colLabels=leyenda_columns,
+                        colColours=col_colors,
                         cellLoc='center',
+                        rowColours=row_colors,
                         bbox=[1.2, 0.4, 0.30, 0.35])
 
     ax.text(1.5, 0.9, r'$\mathbf{\mathbb{Leyenda\;}}$', fontsize=14)
