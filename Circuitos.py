@@ -2,6 +2,7 @@ from datos import obtenerCapacitancia, obtenerFrecuencia, obtenerInductancia, ob
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+import unicodedata
 
 def menu():
     print("Bienvenido al programa de circuitos eléctricos!")
@@ -175,14 +176,16 @@ def graficarCircuito(voltaje, resistencias, serie, rlc=False, XL=None, XC=None):
 
     #Tabla de datos 
     leyenda_columns = [r'Valor']
-
+    row_colors = ['#D5FDA5'] * len(leyenda_rows)
+    col_colors = ['#4f81bd']
     # Agregar una tabla en la parte inferior del gráfico
     the_table = plt.table(cellText=leyenda_text,
                         rowLabels=leyenda_rows,
                         colLabels=leyenda_columns,
                         colColours=col_colors,
                         cellLoc='center',
-                        bbox=[1.2, 0.4, 0.30, 0.35])
+                        rowColours=row_colors,
+                        bbox=[1.2, 0.4, 0.3, 0.5])
 
     ax.text(1.5, 1, r'$\mathbf{\mathbb{Leyenda\;}}$', fontsize=14)
     # Adjust layout to make room for the table:
