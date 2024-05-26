@@ -156,8 +156,8 @@ def graficarCircuito(voltaje, resistencias, serie, rlc=False, XL=None, XC=None):
             ax.plot(x, y, 'k-')             
     else: #Paralelo
 
-        leyenda_rows.append(r'$V_{Total}$')
-        leyenda_text.append([voltaje])
+        leyenda_rows.append(r'$I_{Total}$')
+        leyenda_text.append([f'{corriente:.2f} A'])
         num_componentes = len(componentes)
         for i, (comp, nombre) in enumerate(zip(componentes, nombres)):
             y_pos = 1 - i / (num_componentes - 1) if num_componentes > 1 else 0.5
