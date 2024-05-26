@@ -125,7 +125,9 @@ def graficarCircuito(voltaje, resistencias, serie, rlc=False, XL=None, XC=None):
         for i in range(len(resistencias)):
             leyenda_rows.append(rf'$V_{i+1}$')
             leyenda_text.append([f'{corriente*resistencias[i]:.2f} V'])
-        
+        leyenda_rows.append(r'$I_{Total}$')
+        leyenda_text.append([f'{corriente:.2f} A'])
+
         num_componentes = len(componentes)
         tercio = num_componentes // 3
         resto = num_componentes % 3
@@ -155,14 +157,17 @@ def graficarCircuito(voltaje, resistencias, serie, rlc=False, XL=None, XC=None):
             y = np.array([0,0.03,0,-0.03,0, 0.03,0,-0.03,0])
             ax.plot(x, y, 'k-')             
     else: #Paralelo
-
+        for i in range(len(resistencias)):
+            leyenda_rows.append(rf'$I_{i+1}$')
+            leyenda_text.append([f'{voltaje/resistencias[i]:.2f} A'])
         leyenda_rows.append(r'$I_{Total}$')
         leyenda_text.append([f'{corriente:.2f} A'])
+
         num_componentes = len(componentes)
         for i, (comp, nombre) in enumerate(zip(componentes, nombres)):
             y_pos = 1 - i / (num_componentes - 1) if num_componentes > 1 else 0.5
             ax.plot([0, 1], [y_pos, y_pos], 'k-')
-            ax.text(0.5, y_pos+0.085, nombre + '\n' + f'{comp:.2f} Ω', ha='center', va='center')
+            ax.text(0.5, y_pos+0.09, nombre + '\n' + f'{comp:.2f} Ω', ha='center', va='center')
             y= np.array([y_pos,y_pos+0.03,y_pos,y_pos-0.03,y_pos,y_pos+0.03,y_pos,y_pos-0.03,y_pos])
             x = np.array([0.42,0.44,0.46,0.48,0.5, 0.52,0.54,0.56,0.58])
             ax.plot(x, y, 'k-')
