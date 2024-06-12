@@ -1,4 +1,23 @@
-# fisica
-Proyecto para Física electronica realizado por Nick Emmanuel Salcedo alfaro y Edu Joseph Sanchez Gotea
-Para ejecutar el codigo debe de instalar las bibliotecas  "math", "matplotlib", "numpy" y "unicodedata".
-El codigo main que ejecutaria vendria a ser "Circuitos.py"
+# Proyecto de Física Electrónica
+
+**Realizado por:**  
+- **Nick Emmanuel Salcedo Alfaro**  
+- **Edu Joseph Sanchez Gotea**
+
+## Descripción
+
+Este proyecto se encarga de representar gráficamente los circuitos eléctricos utilizando Python.
+
+## Requisitos
+
+Para ejecutar el código, debe instalar las siguientes bibliotecas:
+
+- `math`
+- `matplotlib`
+- `numpy`
+- `unicodedata`
+
+Puede instalarlas utilizando pip:
+
+```sh
+pip install matplotlib numpy
