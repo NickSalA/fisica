@@ -69,7 +69,7 @@ def resistenciaRLC(serieRLC):
     else:
         X=1/XC-1/XL
         Z =1/((resistenciaTotal**-2+X**2)**0.5) 
-        Zgrados = -1*math.acos(X/(1/resistenciaTotal))*180/math.pi #Aca falla algo
+        Zgrados = -1*2*180/math.pi #Aca falla algo
     corriente= voltaje/Z 
     corrienteGrados = 0-Zgrados 
     return voltaje, resistencias, resistenciaTotal, XL, XC,Z, Zgrados, corriente, corrienteGrados
@@ -187,7 +187,6 @@ def graficarCircuito(voltaje, resistencias, serie, rlc=False, XL=None, XC=None):
                         rowColours=row_colors,
                         bbox=[1.2, 0.4, 0.3, 0.5])
 
-    ax.text(1.5, 1, r'$\mathbf{\mathbb{Leyenda\;}}$', fontsize=14)
     # Adjust layout to make room for the table:
     plt.subplots_adjust(left=0.2, bottom=0.2)
 
