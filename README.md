@@ -21,9 +21,11 @@ Puede instalarlas utilizando pip:
 
 ```sh
 pip install matplotlib 
+```
 
 ```sh
 pip install numpy
+```
 
 ## Ejecución
 
